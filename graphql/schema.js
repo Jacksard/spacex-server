@@ -16,7 +16,6 @@ const data = [
   }
 ];
 
-// The construction pillers of GraphQL
 const {
   GraphQLSchema,
   GraphQLObjectType,
@@ -26,6 +25,8 @@ const {
   GraphQLNonNull,
   GraphQLBoolean
 } = require('graphql');
+
+// Types ------------- Past Launches
 
 const PastLaunchesType = new GraphQLObjectType({
   name: 'PastLauches',
@@ -48,6 +49,40 @@ const RocketType = new GraphQLObjectType({
   })
 });
 
+// Types ------------- Rockets
+
+const RocketsType = new GraphQLObjectType({
+  name: 'Rockets',
+  fields: () => ({
+    id: { type: GraphQLInt },
+    active: { type: GraphQLBoolean },
+    height: { type: HeightType },
+    diameter: { type: DiameterType },
+    mass: { type: MassType }
+  })
+});
+const HeightType = new GraphQLObjectType({
+  name: 'Height',
+  fields: () => ({
+    meters: { type: GraphQLString },
+    feet: { type: GraphQLString }
+  })
+});
+const DiameterType = new GraphQLObjectType({
+  name: 'Diameter',
+  fields: () => ({
+    meters: { type: GraphQLString },
+    feet: { type: GraphQLString }
+  })
+});
+const MassType = new GraphQLObjectType({
+  name: 'Mass',
+  fields: () => ({
+    kg: { type: GraphQLString },
+    lb: { type: GraphQLString }
+  })
+});
+
 // Root Query
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -63,8 +98,8 @@ const RootQuery = new GraphQLObjectType({
           });
       }
     },
-    rocket: {
-      type: new GraphQLList(RocketType),
+    rockets: {
+      type: new GraphQLList(RocketsType),
       resolve(parentValue, args) {
         return axios.get('https://api.spacexdata.com/v3/rockets').then(res => {
           console.log(res.data);
