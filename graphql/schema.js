@@ -12,7 +12,7 @@ const data = [
   {
     id: '1',
     name: 'Bob',
-    address: { city: 'Boston ', province: 'Massechussets' }
+    address: { city: 'Boston ', province: '‎Massachusetts' }
   }
 ];
 
@@ -25,6 +25,20 @@ const {
   GraphQLNonNull,
   GraphQLBoolean
 } = require('graphql');
+
+
+// Types ------------- Future Launches
+const FutureLaunchesType = new GraphQLObjectType({
+  name: "FutureLaunches",
+  fields:()=>({
+    flight_number: {type: GraphQLInt },
+    mission_name: {type: GraphQLString},
+    launch_year: {type: GraphQLString},
+    rocket: {type: RocketType}
+  })
+})
+
+
 
 // Types ------------- Past Launches
 
@@ -96,6 +110,17 @@ const RootQuery = new GraphQLObjectType({
             console.log(res.data);
             return res.data;
           });
+      }
+    },
+    futureLaunches: {
+      type: new GraphQLList(FutureLaunchesType),
+      resolve(parentValue, args){
+        return axios
+        .get('https://api.spacexdata.com/v3/launches/upcoming')
+        .then(res=>{
+          console.log(res.data);
+          return res.data
+        })
       }
     },
     rockets: {
